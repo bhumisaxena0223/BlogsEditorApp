@@ -1,25 +1,22 @@
 <template>
   <div class="page-wrapper">
-    <product-detail
-      v-if="currentProduct"
-      :product="currentProduct"
-    ></product-detail>
+    <blog-details v-if="currentBlog" :blog="currentBlog"></blog-details>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import ProductDetail from '@/components/ProductDetail'
+import BlogDetails from '@/components/BlogDetails.vue'
 
 export default {
-  components: { ProductDetail },
+  components: { BlogDetails },
   props: {
     id: String
   },
   computed: {
-    ...mapGetters('products', ['getProductById']),
-    currentProduct() {
-      return this.getProductById(this.id)
+    ...mapGetters('blogs', ['getBlogById']),
+    currentBlog() {
+      return this.getBlogById(this.id)
     }
   }
 }

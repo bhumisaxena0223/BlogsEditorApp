@@ -71,6 +71,12 @@ const router = new Router({
       component: () =>
         import(/* webpackChunkName: "client-chunk-blogs-details" */ '@/views/Blog.vue')
     },
+    {
+      path: '/edit-blog',
+      name: 'EditBlog',
+      component: () =>
+        import(/* webpackChunkName: "client-chunk-edit-blogs" */ '@/views/EditBlog.vue')
+    },
     { path: '*', redirect: '/home' }
   ]
 })

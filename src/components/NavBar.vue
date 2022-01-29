@@ -8,10 +8,10 @@
     <div class="links">
       <nav class="nav-links">
         <div class="nav-item">
-          <router-link to="/products">Products</router-link>
+          <router-link to="/blogs">Blogs</router-link>
         </div>
         <div class="nav-item">
-          <router-link to="/blogs">Blogs</router-link>
+          <router-link to="/edit-blog">Write a Blog</router-link>
         </div>
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
           <router-link to="/login">Login</router-link>

@@ -1,8 +1,8 @@
 export default {
-  blogs: null,
-  blogNameToCreate: '',
-  blogTitle: '',
-  blogContent: null,
+  blogs: [],
+  blogAuthor: '',
+  blogTitleToCreate: '',
+  blogContent: '',
   blogId: null,
   blogDeletionPending: [],
   blogCreationPending: false

@@ -1,50 +1,72 @@
-import UserProductsDB from '@/firebase/user-products-db'
+import UserBlogsDB from '@/firebase/user-blogs-db'
 
 export default {
   /**
-   * Fetch products of current loggedin user
+   * Fetch blogs of current loggedin user
    */
-  getUserProducts: async ({ rootState, commit }) => {
-    const userProductDb = new UserProductsDB(rootState.authentication.user.id)
+  getUserBlogs: async ({ rootState, commit }) => {
+    const userBlogDb = new UserBlogsDB(rootState.authentication.user.id)
 
-    const products = await userProductDb.readAll()
-    commit('setProducts', products)
+    const blogs = await userBlogDb.readAll()
+    commit('setBlogs', blogs)
   },
 
   /**
-   * Create a product for current loggedin user
+   * Create a blog for current loggedin user
    */
-  createUserProduct: async ({ commit, rootState }, product) => {
-    const userProductDb = new UserProductsDB(rootState.authentication.user.id)
+  createUserBlog: async ({ commit, rootState }, blog) => {
+    const userBlogDb = new UserBlogsDB(rootState.authentication.user.id)
 
-    commit('setProductCreationPending', true)
-    const createdProduct = await userProductDb.create(product)
-    commit('addProduct', createdProduct)
-    commit('setProductCreationPending', false)
+    commit('setBlogCreationPending', true)
+    const createdBlog = await userBlogDb.create(blog)
+    console.log(createdBlog, 'action BLog')
+    commit('addBlog', createdBlog)
+    commit('setBlogCreationPending', false)
   },
 
   /**
-   * Create a new product for current loggedin user and reset product name input
+   * Create a new blog for current loggedin user and reset blog name input
    */
-  triggerAddProductAction: ({ dispatch, state, commit }) => {
-    if (state.productNameToCreate === '') return
+  triggerAddBlogAction: ({ dispatch, state, commit }) => {
+    if (state.blogTitleToCreate === '') return
+    console.log(`called ${state.blogTitleToCreate}`)
 
-    const product = { name: state.productNameToCreate }
-    commit('setProductNameToCreate', '')
-    dispatch('createUserProduct', product)
+    const blog = {
+      title: state.blogTitleToCreate,
+      author: state.blogAuthor,
+      content: state.blogContent
+    }
+    commit('setBlogNameToCreate', {
+      blogTitleToCreate: '',
+      blogAuthor: '',
+      blogContent: ''
+    })
+    dispatch('createUserBlog', blog)
+  },
+  /*
+   * Edit a user blog from its id
+   */
+  editUserBlog: async ({ commit, rootState }, blog) => {
+    const userBlogDb = new UserBlogsDB(rootState.authentication.user.id)
+
+    commit('setBlogCreationPending', true)
+    const updatedBlog = await userBlogDb.update(blog)
+    console.log(updatedBlog, 'updated BLog')
+    commit('updateBlog', updatedBlog)
+    commit('setBlogCreationPending', false)
   },
 
   /**
-   * Delete a user product from its id
+   * Delete a user blog from its id
    */
-  deleteUserProduct: async ({ rootState, commit, getters }, productId) => {
-    if (getters.isProductDeletionPending(productId)) return
+  deleteUserBlog: async ({ rootState, commit, getters }, blogId) => {
+    if (getters.isBlogDeletionPending(blogId)) return
 
-    const userProductsDb = new UserProductsDB(rootState.authentication.user.id)
+    const userBlogsDb = new UserBlogsDB(rootState.authentication.user.id)
 
-    commit('addProductDeletionPending', productId)
-    await userProductsDb.delete(productId)
-    commit('removeProductById', productId)
-    commit('removeProductDeletionPending', productId)
+    commit('addBlogDeletionPending', blogId)
+    await userBlogsDb.delete(blogId)
+    commit('removeBlogById', blogId)
+    commit('removeBlogDeletionPending', blogId)
   }
 }

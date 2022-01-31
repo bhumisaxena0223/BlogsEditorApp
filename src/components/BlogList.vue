@@ -117,7 +117,7 @@
 </template>
 
 <script>
-import { mapState, mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions, mapGetters, mapMutations } from 'vuex'
 
 export default {
   filters: {
@@ -132,8 +132,17 @@ export default {
   },
   methods: {
     ...mapActions('blogs', ['deleteUserBlog']),
+    ...mapMutations('blogs', ['setBlogNameToCreate']),
     editUserBlog(item) {
-      console.log(item)
+      this.$router.replace({
+        name: 'EditBlog',
+        params: {
+          title: item.title,
+          author: item.author,
+          content: item.content,
+          id: item.id
+        }
+      })
     }
   }
 }

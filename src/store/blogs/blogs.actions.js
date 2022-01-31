@@ -46,14 +46,33 @@ export default {
   /*
    * Edit a user blog from its id
    */
-  editUserBlog: async ({ commit, rootState }, blog) => {
+  editUserBlog: async ({ dispatch, commit, rootState }, blog) => {
     const userBlogDb = new UserBlogsDB(rootState.authentication.user.id)
 
     commit('setBlogCreationPending', true)
-    const updatedBlog = await userBlogDb.update(blog)
-    console.log(updatedBlog, 'updated BLog')
-    commit('updateBlog', updatedBlog)
+    await userBlogDb.update(blog)
+    dispatch('getUserBlogs', blog)
     commit('setBlogCreationPending', false)
+  },
+  /**
+   * Create a new blog for current loggedin user and reset blog name input
+   */
+  triggerUpdateBlogAction: ({ dispatch, state, commit }) => {
+    if (state.blogTitleToCreate === '') return
+    console.log(`called ${state.blogTitleToCreate}`, state.blogId)
+
+    const blog = {
+      title: state.blogTitleToCreate,
+      author: state.blogAuthor,
+      content: state.blogContent,
+      id: state.blogId
+    }
+    commit('setBlogNameToCreate', {
+      blogTitleToCreate: '',
+      blogAuthor: '',
+      blogContent: ''
+    })
+    dispatch('editUserBlog', blog)
   },
 
   /**

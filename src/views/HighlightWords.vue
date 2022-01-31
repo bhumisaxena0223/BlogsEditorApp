@@ -1,18 +1,15 @@
 <template>
   <div class="page-wrapper">
-    <h1 class="products-page-title">Products page</h1>
-    <product-list class="product-list"></product-list>
-    <add-product v-if="networkOnLine"></add-product>
+    <highlight-words-list></highlight-words-list>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import ProductList from '@/components/ProductList'
-import AddProduct from '@/components/AddProduct'
+import HighlightWordsList from '@/components/HighlightWordsList.vue'
 
 export default {
-  components: { ProductList, AddProduct },
+  components: { HighlightWordsList },
   computed: mapState('app', ['networkOnLine'])
 }
 </script>

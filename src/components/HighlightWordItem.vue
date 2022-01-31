@@ -1,11 +1,8 @@
 <template>
   <div class="product-item">
-    <router-link
-      class="product-link"
-      :to="{ name: 'product', params: { id: data.id } }"
-    >
-      #{{ index + 1 }} {{ data.name }}
-    </router-link>
+    <div class="product-link" @click="$emit('getWord', data.word)">
+      #{{ index + 1 }} {{ data.word }}
+    </div>
     <div
       v-if="!disableActions"
       class="delete-btn"
@@ -23,6 +20,17 @@ export default {
     index: Number,
     isProductDeletionPending: Boolean,
     disableActions: Boolean
+  },
+  data() {
+    return {
+      searchQuery: null
+    }
+  },
+  methods: {
+    showPreview(word) {
+      console.log('ddd', word)
+      this.searchQuery = word
+    }
   }
 }
 </script>
@@ -33,7 +41,7 @@ export default {
 .product-item {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   width: 100%;
 
   .product-link {

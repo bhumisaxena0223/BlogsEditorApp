@@ -41,10 +41,13 @@
       <div
         class="bg-white py-16 px-4 sm:px-6 lg:col-span-3 lg:py-24 lg:px-8 xl:pl-12"
       >
-        <div class="max-w-lg mx-auto lg:max-w-none">
+        <div v-if="loading" class="w-100 mt-3 text-2xl" disabled>
+          Loading...
+        </div>
+        <div v-if="!loading" class="max-w-lg mx-auto lg:max-w-none">
           <form
             class="grid grid-cols-1 gap-y-6"
-            @submit.prevent="setBlogValues"
+            @submit.prevent="checkValidation"
           >
             <div>
               <label for="title" class="block text-sm font-medium text-gray-700"
@@ -59,8 +62,8 @@
                   placeholder="Title of the Blog"
                 />
               </div>
-              <p id="title-error" class="mt-2 text-sm text-red-600">
-                Your title cannot be blank.
+              <p v-if="errors.title" class="mt-2 text-sm text-red-600">
+                {{ errors.title }}
               </p>
             </div>
             <div>
@@ -82,8 +85,8 @@
                   aria-describedby="author-error"
                 />
               </div>
-              <p id="email-error" class="mt-2 text-sm text-red-600">
-                Your author cannot be blank.
+              <p v-if="errors.author" class="mt-2 text-sm text-red-600">
+                {{ errors.author }}
               </p>
             </div>
             <div>
@@ -104,15 +107,15 @@
                   aria-describedby="content-error"
                 />
               </div>
-              <p id="email-error" class="mt-2 text-sm text-red-600">
-                Your content cannot be blank.
+              <p v-if="errors.content" class="mt-2 text-sm text-red-600">
+                {{ errors.content }}
               </p>
             </div>
             <div>
               <button
                 type="submit"
                 class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                @click="setBlogValues()"
+                @click="checkValidation()"
               >
                 Post
               </button>
@@ -134,8 +137,11 @@ export default {
       blog: {
         title: '',
         author: '',
-        content: ''
-      }
+        content: '',
+        id: ''
+      },
+      errors: {},
+      loading: false
     }
   },
   computed: mapState('blogs', [
@@ -144,17 +150,51 @@ export default {
     'blogAuthor',
     'blogCreationPending'
   ]),
+  mounted() {
+    console.log(this.$route)
+    const editedData = this.$route.params
+    console.log(editedData)
+    if (this.$route.params !== {}) {
+      this.blog.title = editedData.title
+      this.blog.author = editedData.author
+      this.blog.content = editedData.content
+      this.blog.id = editedData.id
+    }
+  },
   methods: {
     ...mapMutations('blogs', ['setBlogNameToCreate']),
-    ...mapActions('blogs', ['triggerAddBlogAction']),
+    ...mapActions('blogs', ['triggerAddBlogAction', 'triggerUpdateBlogAction']),
+    checkValidation() {
+      const errors = {}
+      if (this.blog.title === '') {
+        console.log('rr')
+        errors.title = 'This field is required.'
+      } else if (this.blog.author === '') {
+        errors.author = 'This field is required.'
+      } else if (this.blog.content.length <= 5) {
+        errors.content = 'Content is too short to add to post'
+      } else {
+        this.loading = true
+        this.setBlogValues()
+      }
+      this.errors = errors
+    },
     async setBlogValues() {
       console.log(this.blogTitleToCreate)
       await this.setBlogNameToCreate({
         blogTitleToCreate: this.blog.title,
         blogAuthor: this.blog.author,
-        blogContent: this.blog.content
+        blogContent: this.blog.content,
+        blogId: this.blog.id
       })
-      this.triggerAddBlogAction()
+      if (this.blog.id !== undefined) {
+        console.log(this.blog)
+        this.triggerUpdateBlogAction()
+      } else {
+        this.triggerAddBlogAction()
+      }
+      this.$router.replace('/blogs')
+      this.loading = false
     }
   }
 }

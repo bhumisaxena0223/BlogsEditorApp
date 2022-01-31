@@ -1,23 +1,22 @@
 export default {
   /* Blog input name */
   setBlogNameToCreate: (state, payload) => {
-    console.log(payload, 'Payload')
+    // console.log(payload, 'Payload')
     state.blogTitleToCreate = payload.blogTitleToCreate
     state.blogAuthor = payload.blogAuthor
     state.blogContent = payload.blogContent
+    state.blogId = payload.blogId
   },
 
   /* Blogs */
   setBlogs: (state, blogs) => {
     state.blogs = blogs
-    console.log(state.blogs)
   },
   addBlog: (state, blog) => {
     state.blogs.push(blog)
-    console.log(state.blogs)
   },
   updateBlog: (state, blogData) => {
-    const index = state.blogs.findIndex(blog => blog.id === blogData.id)
+    const index = state.blogs.findIndex(blog => blog.id === blogData)
     console.log(index, blogData)
     // state.blogs.u(index, 1)
   },

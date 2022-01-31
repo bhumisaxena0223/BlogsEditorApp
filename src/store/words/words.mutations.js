@@ -2,7 +2,7 @@ export default {
   /* Word input name */
   setWordToCreate: (state, payload) => {
     console.log(payload, 'Payload')
-    state.wordToCreate = payload.wordToCreate
+    state.wordToCreate = payload
   },
 
   /* Words */

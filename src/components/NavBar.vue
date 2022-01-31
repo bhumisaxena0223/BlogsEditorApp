@@ -13,6 +13,9 @@
         <div class="nav-item">
           <router-link to="/edit-blog">Write a Blog</router-link>
         </div>
+        <div class="nav-item">
+          <router-link to="/highlight-words">Keywords</router-link>
+        </div>
         <div v-if="!isUserLoggedIn && networkOnLine" class="nav-item">
           <router-link to="/login">Login</router-link>
         </div>

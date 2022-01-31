@@ -29,7 +29,6 @@
     <div
       ref="target"
       class="mt-8 text-xl text-gray-500 leading-8"
-      contenteditable="true"
       @input="testFunction"
       v-html="blog.content"
     ></div>
@@ -59,8 +58,12 @@ export default {
       'id',
       'textSelectionTooltipContainer'
     )
+    this.textSelectionTooltipContainer.setAttribute(
+      'onclick',
+      this.setHighlighter()
+    )
     this.textSelectionTooltipContainer.innerHTML = `
-        <button style="background-color:white; padding: 4px; font-size:12px; border-radius:6px; border: 1px solid blue;" id="texthighlight">
+        <button id="texthighlight" style="background-color:white; padding: 4px; font-size:12px; border-radius:6px; border: 1px solid blue;">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
   <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
 </svg></i></button>`
@@ -76,49 +79,41 @@ export default {
       )
         this.testFunction()
     })
+    // document.addEventListener('click', '#texthighlight', this.setHighlighter())
   },
   methods: {
     ...mapActions('words', ['triggerAddWordAction']),
     ...mapMutations('words', ['setWordToCreate']),
     updateScroll() {
       this.scrollPosition = window.scrollY
+      console.log(window.screenY)
     },
     showBtn() {
       console.log('active')
     },
     testFunction() {
-      const bodyElement = document.getElementsByTagName('BODY')[0]
       const selectedText = window.getSelection().toString()
       const alphanumeric = /^[\p{sc=Latn}\p{Nd}]*$/u
-      this.removeLastTooltip()
-      if (selectedText.match(alphanumeric)) {
+      console.log(
+        'selected TEXT',
+        selectedText,
+        selectedText.match(alphanumeric)
+      )
+      if (selectedText.match(alphanumeric) === null) {
         console.log('selected TEXT', selectedText)
+        this.removeLastTooltip()
         this.selectedText = selectedText
-        this.addHighlighter = true
+        const bodyElement = document.getElementsByTagName('BODY')[0]
         const createDiv = window.getSelection().getRangeAt(0)
         const rect = createDiv.getBoundingClientRect()
-        const position = rect.top + 176
-        this.scrollPosition = window.scrollY
+        console.log(rect.top, 'rect')
+        const position = rect.top + 178
         const containerTop = `${this.scrollPosition + rect.top - position}px`
-        // console.log(containerTop)
+        console.log(containerTop)
         const containerLeft = `${rect.left + rect.width / 2 - 20}px`
         this.textSelectionTooltipContainer.style.transform = `translate3d(${containerLeft},${containerTop}, 0px)`
         bodyElement.appendChild(this.textSelectionTooltipContainer)
-      }
-    },
-    createToolTip() {
-      const bodyElement = document.getElementsByTagName('BODY')[0]
-      const selectedText = window.getSelection().toString()
-      const alphanumeric = /^[\p{sc=Latn}\p{Nd}]*$/u
-      if (selectedText.match(alphanumeric)) {
-        // const craateDiv = window.getSelection().getRangeAt(0)
-        const textSelectionTooltipContainer = document.createElement('div')
-        textSelectionTooltipContainer.setAttribute(
-          'id',
-          'textSelectionTooltipContainer'
-        )
-        textSelectionTooltipContainer.innerHTML = `<button style="background-color:yellow;" id="textShareTwitterBtn">HighLight</button>`
-        bodyElement.removeChild(textSelectionTooltipContainer)
+        this.setHighlighter(selectedText)
       }
     },
     removeLastTooltip() {
@@ -130,10 +125,12 @@ export default {
         }
       })
     },
-    setHighlighter() {
-      console.log(this.selectedText)
-      this.setWordToCreate(this.selectedText)
-      this.triggerAddWordAction()
+    setHighlighter(word) {
+      console.log(word, 'upda')
+      if (word !== '') {
+        this.setWordToCreate(word)
+        this.triggerAddWordAction()
+      }
     }
   }
 }

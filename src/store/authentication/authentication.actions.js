@@ -17,6 +17,7 @@ export default {
     commit('setUser', user)
     dispatch('products/getUserProducts', null, { root: true })
     dispatch('blogs/getUserBlogs', null, { root: true })
+    dispatch('words/getUserWords', null, { root: true })
   },
 
   /**
@@ -25,7 +26,8 @@ export default {
   logout: ({ commit }) => {
     commit('setUser', null)
     commit('products/setProducts', null, { root: true })
-    commit('blogs/setBlogs', null, { root: true})
+    commit('blogs/setBlogs', null, { root: true })
+    commit('words/getUserWords', null, { root: true })
 
     const currentRouter = router.app.$route
     if (!(currentRouter.meta && currentRouter.meta.authNotRequired)) {

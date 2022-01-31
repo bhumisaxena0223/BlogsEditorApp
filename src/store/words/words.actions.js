@@ -34,9 +34,7 @@ export default {
     const wordData = {
       word: state.wordToCreate
     }
-    commit('setWordToCreate', {
-      wordToCreate: ''
-    })
+    commit('setWordToCreate', '')
     dispatch('createUserWord', wordData)
   },
   /**

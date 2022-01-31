@@ -31,25 +31,16 @@
       class="mt-8 text-xl text-gray-500 leading-8"
       contenteditable="true"
       @input="testFunction"
-    >
-      {{ blog.content }}
-    </div>
-    <span v-if="addHighlighter">
-      <v-swatches v-model="color"></v-swatches>
-    </span>
+      v-html="blog.content"
+    ></div>
     <!-- <input class="hidden" value="Text to select" @select="testFunction" /> -->
   </div>
 </template>
 
 <script>
 import { mapActions, mapMutations } from 'vuex'
-import VSwatches from 'vue-swatches'
-
-// Import the styles too, typically in App.vue or main.js
-import 'vue-swatches/dist/vue-swatches.css'
 
 export default {
-  components: { VSwatches },
   props: {
     blog: Object
   },
@@ -58,10 +49,25 @@ export default {
       addHighlighter: false,
       color: null,
       scrollPosition: 0,
-      selectedText: ''
+      selectedText: '',
+      textSelectionTooltipContainer: null
     }
   },
   mounted() {
+    this.textSelectionTooltipContainer = document.createElement('div')
+    this.textSelectionTooltipContainer.setAttribute(
+      'id',
+      'textSelectionTooltipContainer'
+    )
+    this.textSelectionTooltipContainer.innerHTML = `
+        <button style="background-color:white; padding: 4px; font-size:12px; border-radius:6px; border: 1px solid blue;" id="texthighlight">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+  <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+</svg></i></button>`
+    console.log(this.textSelectionTooltipContainer, 'text div')
+    // document
+    //   .getElementById('#textSelectionTooltipContainer')
+    //   .onclick(this.showBtn)
     document.addEventListener('scroll', this.updateScroll)
     document.addEventListener('mouseup', event => {
       if (
@@ -76,7 +82,6 @@ export default {
     ...mapMutations('words', ['setWordToCreate']),
     updateScroll() {
       this.scrollPosition = window.scrollY
-      console.log(window.screenY)
     },
     showBtn() {
       console.log('active')
@@ -85,25 +90,20 @@ export default {
       const bodyElement = document.getElementsByTagName('BODY')[0]
       const selectedText = window.getSelection().toString()
       const alphanumeric = /^[\p{sc=Latn}\p{Nd}]*$/u
+      this.removeLastTooltip()
       if (selectedText.match(alphanumeric)) {
         console.log('selected TEXT', selectedText)
         this.selectedText = selectedText
         this.addHighlighter = true
-        const craateDiv = window.getSelection().getRangeAt(0)
-        const rect = craateDiv.getBoundingClientRect()
-        const textSelectionTooltipContainer = document.createElement('div')
-        textSelectionTooltipContainer.setAttribute(
-          'id',
-          'textSelectionTooltipContainer'
-        )
-        textSelectionTooltipContainer.innerHTML = `<button onclick="setHighlighter" style="background-color:yellow;" id="textShareTwitterBtn">HighLight</button>`
-        console.log(rect.top, 'rect', this.scrollPosition)
-        // eslint-disable-next-line no-undef
-        const containerTop = `${this.scrollPosition + rect.top - 20}px`
-        console.log(containerTop)
-        const containerLeft = `${rect.left + rect.width / 2 - 50}px`
-        textSelectionTooltipContainer.style.transform = `translate3d(${containerLeft},${containerTop}, 0px)`
-        bodyElement.appendChild(textSelectionTooltipContainer)
+        const createDiv = window.getSelection().getRangeAt(0)
+        const rect = createDiv.getBoundingClientRect()
+        const position = rect.top + 176
+        this.scrollPosition = window.scrollY
+        const containerTop = `${this.scrollPosition + rect.top - position}px`
+        // console.log(containerTop)
+        const containerLeft = `${rect.left + rect.width / 2 - 20}px`
+        this.textSelectionTooltipContainer.style.transform = `translate3d(${containerLeft},${containerTop}, 0px)`
+        bodyElement.appendChild(this.textSelectionTooltipContainer)
       }
     },
     createToolTip() {
@@ -120,6 +120,15 @@ export default {
         textSelectionTooltipContainer.innerHTML = `<button style="background-color:yellow;" id="textShareTwitterBtn">HighLight</button>`
         bodyElement.removeChild(textSelectionTooltipContainer)
       }
+    },
+    removeLastTooltip() {
+      const bodyElement = document.getElementsByTagName('BODY')[0]
+      bodyElement.addEventListener('mouseup', () => {
+        const textu = document.getSelection().toString()
+        if (!textu.length) {
+          this.textSelectionTooltipContainer.remove()
+        }
+      })
     },
     setHighlighter() {
       console.log(this.selectedText)
@@ -138,6 +147,7 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 100%;
+  // width: 100%;
+  overflow-x: hidden;
 }
 </style>

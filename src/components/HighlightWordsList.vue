@@ -70,20 +70,16 @@ export default {
   },
   methods: {
     showPreview(word) {
-      console.log('ddd', word)
       const { blogs } = this
       if (word) {
-        blogs.filter(item => {
-          console.log(item.content, 'item')
+        this.relatedBlogs = blogs.filter(item => {
           return word
             .toLowerCase()
             .split(' ')
             .every(v => item.content.toLowerCase().includes(v))
         })
-        console.log(blogs, 'BLOGS')
-        this.relatedBlogs = blogs
       }
-      return blogs
+      return this.relatedBlogs
     },
     ...mapActions('products', ['deleteUserProduct'])
   }

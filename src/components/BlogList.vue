@@ -54,9 +54,12 @@
               <p class="text-xl font-semibold text-gray-900">
                 {{ blog.title }}
               </p>
-              <p class="mt-3 text-base text-gray-500">
-                {{ blog.content }}
-              </p>
+              <p class="mt-4"></p>
+              <p
+                class="mt-5 text-sm text-gray-500 h-15 overflow-hidden inline"
+                v-html="blog.content"
+              ></p>
+              <span>...</span>
             </router-link>
             <div class="mt-6 flex items-center">
               <div class="ml-1">

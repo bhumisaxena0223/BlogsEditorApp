@@ -27,9 +27,11 @@
       >
     </h1>
     <div
+      id="blogcontent"
       ref="target"
+      contenteditable="true"
       class="mt-8 text-xl text-gray-500 leading-8"
-      @input="testFunction"
+      @input="SelectFunction"
       v-html="blog.content"
     ></div>
     <!-- <input class="hidden" value="Text to select" @select="testFunction" /> -->
@@ -49,40 +51,43 @@ export default {
       color: null,
       scrollPosition: 0,
       selectedText: '',
-      textSelectionTooltipContainer: null
+      textSelectionTooltipContainer: null,
+      editedContent: ''
     }
   },
   mounted() {
     this.textSelectionTooltipContainer = document.createElement('div')
+    this.div = document.createElement('div')
+    this.div.setAttribute('ref', 'highlight')
     this.textSelectionTooltipContainer.setAttribute(
       'id',
       'textSelectionTooltipContainer'
     )
-    this.textSelectionTooltipContainer.setAttribute(
-      'onclick',
-      this.setHighlighter()
-    )
+    this.textSelectionTooltipContainer.onclick = () => {
+      this.setHighlighter(this.selectedText, this.editedContent)
+    }
     this.textSelectionTooltipContainer.innerHTML = `
         <button id="texthighlight" style="background-color:white; padding: 4px; font-size:12px; border-radius:6px; border: 1px solid blue;">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
   <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
 </svg></i></button>`
-    console.log(this.textSelectionTooltipContainer, 'text div')
-    // document
-    //   .getElementById('#textSelectionTooltipContainer')
-    //   .onclick(this.showBtn)
+    // console.log(this.textSelectionTooltipContainer, 'text div')
     document.addEventListener('scroll', this.updateScroll)
     document.addEventListener('mouseup', event => {
+      console.log(event.target)
       if (
         event.target === this.$refs.target ||
         event.target.contains(this.$refs.target)
       )
-        this.testFunction()
+        this.SelectFunction()
     })
+    console.log(this.$refs.target, document.getElementById('blogcontent'))
     // document.addEventListener('click', '#texthighlight', this.setHighlighter())
   },
   methods: {
     ...mapActions('words', ['triggerAddWordAction']),
+    ...mapMutations('blogs', ['setBlogNameToCreate']),
+    ...mapActions('blogs', ['triggerUpdateBlogAction']),
     ...mapMutations('words', ['setWordToCreate']),
     updateScroll() {
       this.scrollPosition = window.scrollY
@@ -91,7 +96,7 @@ export default {
     showBtn() {
       console.log('active')
     },
-    testFunction() {
+    SelectFunction() {
       const selectedText = window.getSelection().toString()
       const alphanumeric = /^[\p{sc=Latn}\p{Nd}]*$/u
       console.log(
@@ -103,17 +108,32 @@ export default {
         console.log('selected TEXT', selectedText)
         this.removeLastTooltip()
         this.selectedText = selectedText
+        console.log(this.editedContent, 'blogs')
         const bodyElement = document.getElementsByTagName('BODY')[0]
         const createDiv = window.getSelection().getRangeAt(0)
         const rect = createDiv.getBoundingClientRect()
-        console.log(rect.top, 'rect')
+        // const rect = createDiv.getBoundingClientRect()
+        // create Css for the word
+        const selectionContents = createDiv.extractContents()
+        const span = document.createElement('span')
+
+        span.appendChild(selectionContents)
+
+        span.style.backgroundColor = 'yellow'
+        span.style.color = 'black'
+
+        createDiv.insertNode(span)
+        // create Tooltip
         const position = rect.top + 178
         const containerTop = `${this.scrollPosition + rect.top - position}px`
         console.log(containerTop)
         const containerLeft = `${rect.left + rect.width / 2 - 20}px`
         this.textSelectionTooltipContainer.style.transform = `translate3d(${containerLeft},${containerTop}, 0px)`
         bodyElement.appendChild(this.textSelectionTooltipContainer)
-        this.setHighlighter(selectedText)
+        const editedDiv = document.getElementById('blogcontent')
+        this.editedContent = editedDiv.outerHTML
+        console.log(editedDiv, this.editedContent)
+        // this.setHighlighter(selectedText, undefined)
       }
     },
     removeLastTooltip() {
@@ -125,11 +145,20 @@ export default {
         }
       })
     },
-    setHighlighter(word) {
-      console.log(word, 'upda')
-      if (word !== '') {
+    async setHighlighter(word, content) {
+      console.log(word, 'upda', content)
+      if (word !== '' && content !== undefined) {
         this.setWordToCreate(word)
         this.triggerAddWordAction()
+        console.log(this.$refs.target, 'DIV')
+        await this.setBlogNameToCreate({
+          blogTitleToCreate: this.blog.title,
+          blogAuthor: this.blog.author,
+          blogContent: content,
+          blogId: this.blog.id
+        })
+        this.triggerUpdateBlogAction()
+        // this.addHighlighter = true
       }
     }
   }

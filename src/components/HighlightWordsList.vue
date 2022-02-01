@@ -28,23 +28,24 @@
       <li
         v-for="item in relatedBlogs"
         :key="item.id"
-        class="col-span-1 bg-white rounded-lg shadow divide-y divide-gray-200"
+        class="col-span-1 bg-white rounded-lg shadow"
       >
         <div class="w-full flex items-center justify-between p-6 space-x-6">
-          <div class="flex-1 truncate">
+          <div class="flex-1 h-28 overflow-hidden">
             <div class="flex items-center space-x-3">
               <h3 class="text-gray-900 text-sm font-medium truncate">
                 {{ item.title }}
               </h3>
-              <div>
-                <router-link :to="`/blogs/${item.id}`" target="_blank">{{
-                  item.content
-                }}</router-link>
-              </div>
+              <p>
+                <router-link
+                  :to="`/blogs/${item.id}`"
+                  target="_blank"
+                  v-html="item.content"
+                ></router-link>
+              </p>
             </div>
           </div>
         </div>
-        <div></div>
       </li>
     </ul>
   </div>

@@ -72,7 +72,7 @@ export default {
     // console.log(this.textSelectionTooltipContainer, 'text div')
     document.addEventListener('scroll', this.updateScroll)
     document.addEventListener('mouseup', event => {
-      // console.log(event)
+      console.log(event)
       if (
         event.target === this.$refs.target ||
         event.target.contains(this.$refs.target)
@@ -101,34 +101,20 @@ export default {
       )
       if (selectedText.match(alphanumeric) === null) {
         console.log('selected TEXT', selectedText)
-        this.removeLastTooltip()
         this.selectedText = selectedText
         console.log(this.editedContent, 'blogs')
         const bodyElement = document.getElementsByTagName('BODY')[0]
         const createDiv = window.getSelection().getRangeAt(0)
         const rect = createDiv.getBoundingClientRect()
-        // const rect = createDiv.getBoundingClientRect()
-        // create Css for the word
-        const selectionContents = createDiv.extractContents()
-        const span = document.createElement('span')
-
-        span.appendChild(selectionContents)
-
-        span.style.backgroundColor = 'yellow'
-        span.style.color = 'black'
-
-        createDiv.insertNode(span)
-        // create Tooltip
-        const position = rect.top + 368
+        const position = rect.top + 210
         const containerTop = `${this.scrollPosition + rect.top - position}px`
         console.log(containerTop)
         const containerLeft = `${rect.left + rect.width / 2 - 20}px`
         this.textSelectionTooltipContainer.style.transform = `translate3d(${containerLeft},${containerTop}, 0px)`
         bodyElement.appendChild(this.textSelectionTooltipContainer)
-        const editedDiv = document.getElementById('blogcontent')
-        this.editedContent = editedDiv.outerHTML
-        console.log(editedDiv, this.editedContent)
         // this.setHighlighter(selectedText, undefined)
+      } else {
+        this.removeLastTooltip()
       }
     },
     removeLastTooltip() {
@@ -141,7 +127,21 @@ export default {
       })
     },
     async setHighlighter(word, content) {
-      console.log(word, 'upda', content)
+      const createDiv = window.getSelection().getRangeAt(0)
+      // const rect = createDiv.getBoundingClientRect()
+      // create Css for the word
+      const selectionContents = createDiv.extractContents()
+      const span = document.createElement('span')
+
+      span.appendChild(selectionContents)
+
+      span.style.backgroundColor = 'yellow'
+      span.style.color = 'black'
+
+      createDiv.insertNode(span)
+      const editedDiv = document.getElementById('blogcontent')
+      this.editedContent = editedDiv.outerHTML
+      console.log(editedDiv, this.editedContent, word)
       if (word !== '' && content !== undefined) {
         this.setWordToCreate(word)
         this.triggerAddWordAction()
@@ -149,7 +149,7 @@ export default {
         await this.setBlogNameToCreate({
           blogTitleToCreate: this.blog.title,
           blogAuthor: this.blog.author,
-          blogContent: content,
+          blogContent: this.editedContent,
           blogId: this.blog.id
         })
         this.triggerUpdateBlogAction()

@@ -46,7 +46,11 @@
         <div
           class="mt-8 grid gap-16 pt-12 lg:grid-cols-3 lg:gap-x-5 lg:gap-y-12"
         >
-          <div v-for="blog in blogs" :key="blog.id">
+          <div
+            v-for="blog in reverseBlog"
+            :key="blog.id"
+            class="h-52 overflow-hidden"
+          >
             <router-link
               :to="{ path: `/blogs/${blog.id}`, params: { id: blog.id } }"
               class="block mt-4"
@@ -56,7 +60,7 @@
               </p>
               <p class="mt-4"></p>
               <p
-                class="mt-5 text-sm text-gray-500 h-15 overflow-hidden inline"
+                class="mt-5 text-sm text-gray-500 h-12 overflow-hidden inline"
                 v-html="blog.content"
               ></p>
               <span>...</span>
@@ -131,7 +135,11 @@ export default {
   computed: {
     ...mapGetters('blogs', ['isBlogDeletionPending']),
     ...mapState('blogs', ['blogs']),
-    ...mapState('app', ['networkOnLine'])
+    ...mapState('app', ['networkOnLine']),
+    reverseBlog() {
+      // slice to make a copy of array, then reverse the copy
+      return this.blogs.slice().reverse()
+    }
   },
   methods: {
     ...mapActions('blogs', ['deleteUserBlog']),

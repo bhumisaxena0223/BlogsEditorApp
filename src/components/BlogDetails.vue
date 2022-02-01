@@ -29,7 +29,6 @@
     <div
       id="blogcontent"
       ref="target"
-      contenteditable="true"
       class="mt-8 text-xl text-gray-500 leading-8"
       @input="SelectFunction"
       v-html="blog.content"

@@ -100,7 +100,7 @@
                   id="content"
                   v-model="blog.content"
                   name="content"
-                  rows="4"
+                  rows="20"
                   class="block w-full shadow-sm py-3 px-4 placeholder-gray-500 focus:ring-indigo-500 focus:border-indigo-500 border border-gray-300 rounded-md"
                   placeholder="Description about blog"
                   aria-invalid="true"

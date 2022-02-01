@@ -4,50 +4,57 @@
     <p v-if="words && !words.length" class="infos-label">
       You don't have any product yet
     </p>
-    <h1 class="text-2xl font-extrabold place-items-center ml-3">
+    <h1 class="text-2xl font-extrabold place-items-center">
       Highlighted Words list
     </h1>
+    <p class="text-sm font-medium ml-3">Click on any keyword to get replated Blog</p>
     <!-- {{ blogs }} -->
-    <highlight-word-item
-      v-for="(word, index) in words"
-      :key="word.id"
-      class="product-row"
-      :index="index"
-      :is-product-deletion-pending="isProductDeletionPending(word.id)"
-      :disable-actions="!networkOnLine"
-      :data="word"
-      :blogs="blogs"
-      @getWord="showPreview"
-      @deleteProduct="deleteUserProduct"
-    >
-    </highlight-word-item>
-    <ul
-      role="list"
-      class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
-    >
-      <li
-        v-for="item in relatedBlogs"
-        :key="item.id"
-        class="col-span-1 bg-white rounded-lg shadow"
-      >
-        <div class="w-full flex items-center justify-between p-6 space-x-6">
-          <div class="flex-1 h-28 overflow-hidden">
-            <div class="flex items-center space-x-3">
-              <h3 class="text-gray-900 text-sm font-medium truncate">
-                {{ item.title }}
-              </h3>
-              <p>
-                <router-link
-                  :to="`/blogs/${item.id}`"
-                  target="_blank"
-                  v-html="item.content"
-                ></router-link>
-              </p>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="ml-3">
+        <highlight-word-item
+          v-for="(word, index) in words"
+          :key="word.id"
+          class="product-row"
+          :index="index"
+          :is-product-deletion-pending="isProductDeletionPending(word.id)"
+          :disable-actions="!networkOnLine"
+          :data="word"
+          :blogs="blogs"
+          @getWord="showPreview"
+          @deleteProduct="deleteUserProduct"
+        >
+        </highlight-word-item>
+      </div>
+      <!-- ... -->
+      <div class="col-span-2">
+        <ul
+          role="list"
+          class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
+          <li
+            v-for="item in relatedBlogs"
+            :key="item.id"
+            class="col-span-1 bg-white rounded-lg shadow"
+          >
+            <div class="w-full flex items-center justify-between p-6 space-x-6">
+              <div class="flex-1 h-32 overflow-hidden">
+                <div class="flex items-center space-x-3">
+                  <h3 class="text-gray-900 text-sm font-medium truncate">
+                    {{ item.title }}
+                  </h3>
+                  <p>
+                    <router-link
+                      :to="`/blogs/${item.id}`"
+                      v-html="item.content"
+                    ></router-link>
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      </li>
-    </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 

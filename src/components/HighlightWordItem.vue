@@ -3,13 +3,13 @@
     <div class="product-link" @click="$emit('getWord', data.word)">
       #{{ index + 1 }} {{ data.word }}
     </div>
-    <div
+    <!-- <div
       v-if="!disableActions"
       class="delete-btn"
       @click="$emit('deleteProduct', data.id)"
     >
       {{ isProductDeletionPending ? 'delete in progress...' : 'delete' }}
-    </div>
+    </div> -->
   </div>
 </template>
 

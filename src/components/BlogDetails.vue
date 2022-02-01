@@ -30,10 +30,9 @@
       id="blogcontent"
       ref="target"
       class="mt-8 text-xl text-gray-500 leading-8"
-      @input="SelectFunction"
       v-html="blog.content"
     ></div>
-    <!-- <input class="hidden" value="Text to select" @select="testFunction" /> -->
+    <input class="hidden" value="Text to select" @select="SelectFunction" />
   </div>
 </template>
 
@@ -73,14 +72,14 @@ export default {
     // console.log(this.textSelectionTooltipContainer, 'text div')
     document.addEventListener('scroll', this.updateScroll)
     document.addEventListener('mouseup', event => {
-      console.log(event.target)
+      // console.log(event)
       if (
         event.target === this.$refs.target ||
         event.target.contains(this.$refs.target)
       )
         this.SelectFunction()
     })
-    console.log(this.$refs.target, document.getElementById('blogcontent'))
+    // console.log(this.$refs.target, document.getElementById('blogcontent'))
     // document.addEventListener('click', '#texthighlight', this.setHighlighter())
   },
   methods: {
@@ -90,10 +89,7 @@ export default {
     ...mapMutations('words', ['setWordToCreate']),
     updateScroll() {
       this.scrollPosition = window.scrollY
-      console.log(window.screenY)
-    },
-    showBtn() {
-      console.log('active')
+      // console.log(window.screenY)
     },
     SelectFunction() {
       const selectedText = window.getSelection().toString()
@@ -123,7 +119,7 @@ export default {
 
         createDiv.insertNode(span)
         // create Tooltip
-        const position = rect.top + 178
+        const position = rect.top + 368
         const containerTop = `${this.scrollPosition + rect.top - position}px`
         console.log(containerTop)
         const containerLeft = `${rect.left + rect.width / 2 - 20}px`

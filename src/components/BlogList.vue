@@ -49,7 +49,7 @@
           <div
             v-for="blog in reverseBlog"
             :key="blog.id"
-            class="h-52 overflow-hidden"
+            class="rounded-lg shadow-lg p-5"
           >
             <router-link
               :to="{ path: `/blogs/${blog.id}`, params: { id: blog.id } }"
@@ -58,12 +58,13 @@
               <p class="text-xl font-semibold text-gray-900">
                 {{ blog.title }}
               </p>
-              <p class="mt-4"></p>
-              <p
-                class="mt-5 text-sm text-gray-500 h-12 overflow-hidden inline"
-                v-html="blog.content"
-              ></p>
-              <span>...</span>
+              <p class="mt-3"></p>
+              <div
+                class="mt-5 text-sm text-gray-500 overflow-hidden p-4 h-72 max-h-72"
+              >
+                <p class="text-s" v-html="blog.content"></p>
+                <span>...</span>
+              </div>
             </router-link>
             <div class="mt-6 flex items-center">
               <div class="ml-1">

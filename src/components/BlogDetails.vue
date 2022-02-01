@@ -29,10 +29,11 @@
     <div
       id="blogcontent"
       ref="target"
-      class="mt-8 text-xl text-gray-500 leading-8"
+      class="mt-8 text-base text-gray-500 leading-8"
+      @input="SelectFunction"
       v-html="blog.content"
     ></div>
-    <input class="hidden" value="Text to select" @select="SelectFunction" />
+    <!-- <input class="hidden" value="Text to select" @select="" /> -->
   </div>
 </template>
 
@@ -50,8 +51,12 @@ export default {
       scrollPosition: 0,
       selectedText: '',
       textSelectionTooltipContainer: null,
-      editedContent: ''
+      editedContent: '',
+      refValue: ''
     }
+  },
+  created() {
+    this.removeLastTooltip()
   },
   mounted() {
     this.textSelectionTooltipContainer = document.createElement('div')
@@ -72,15 +77,13 @@ export default {
     // console.log(this.textSelectionTooltipContainer, 'text div')
     document.addEventListener('scroll', this.updateScroll)
     document.addEventListener('mouseup', event => {
-      console.log(event)
+      console.log(event, 'RED', this.$refs)
       if (
         event.target === this.$refs.target ||
         event.target.contains(this.$refs.target)
       )
         this.SelectFunction()
     })
-    // console.log(this.$refs.target, document.getElementById('blogcontent'))
-    // document.addEventListener('click', '#texthighlight', this.setHighlighter())
   },
   methods: {
     ...mapActions('words', ['triggerAddWordAction']),
@@ -102,7 +105,7 @@ export default {
       if (selectedText.match(alphanumeric) === null) {
         console.log('selected TEXT', selectedText)
         this.selectedText = selectedText
-        console.log(this.editedContent, 'blogs')
+        // console.log(this.editedContent, 'blogs')
         const bodyElement = document.getElementsByTagName('BODY')[0]
         const createDiv = window.getSelection().getRangeAt(0)
         const rect = createDiv.getBoundingClientRect()
@@ -128,7 +131,6 @@ export default {
     },
     async setHighlighter(word, content) {
       const createDiv = window.getSelection().getRangeAt(0)
-      // const rect = createDiv.getBoundingClientRect()
       // create Css for the word
       const selectionContents = createDiv.extractContents()
       const span = document.createElement('span')
@@ -140,8 +142,9 @@ export default {
 
       createDiv.insertNode(span)
       const editedDiv = document.getElementById('blogcontent')
-      this.editedContent = editedDiv.outerHTML
-      console.log(editedDiv, this.editedContent, word)
+      this.editedContent = editedDiv.innerHTML
+      console.log(editedDiv, this.editedContent, word, content)
+      this.removeLastTooltip()
       if (word !== '' && content !== undefined) {
         this.setWordToCreate(word)
         this.triggerAddWordAction()

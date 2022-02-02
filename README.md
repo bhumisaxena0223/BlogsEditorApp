@@ -20,3 +20,26 @@ the middle.
   </p>
   
  <div style="font-size:18px;"> <bold>Deployed webisite: https://blogging-highlight-content.firebaseapp.com/home</bold> </div>
+ 
+ <div>
+  <strong>
+    To run the proejct. please follow following commands </strong>
+  <ul>
+    <li>
+     <code> git clone https://github.com/bhumisaxena0223/BlogsEditorApp.git </code>
+    </li>
+    <li>
+    <code>  git checkout origin master </code>
+    </li>
+    <li>
+     <code> cd my-bento-project</code>
+    </li>
+    <li>
+      <code> npm run setup </code>
+    </li>
+    <li>
+      <code> npm run serve </code>
+      Port : localhost:8080
+    </li>
+  </ul>
+  </div>

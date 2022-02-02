@@ -29,13 +29,13 @@ the middle.
      <code> git clone https://github.com/bhumisaxena0223/BlogsEditorApp.git </code>
     </li>
     <li>
-    <code>  git checkout origin master </code>
+    <code>  git checkout origin Bhumi </code>
     </li>
     <li>
      <code> cd my-bento-project</code>
     </li>
     <li>
-      <code> npm run setup </code>
+      <code> npm install </code>
     </li>
     <li>
       <code> npm run serve </code>
